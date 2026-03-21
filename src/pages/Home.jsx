@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import SessionForm from '../components/SessionForm'
 import { useSession } from '../context/SessionContext'
-
-const HOME_BACKGROUND_SRC = '/ghibli-clover-bg.png'
+import homeBackground from '../assets/home-background.png'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -111,20 +110,20 @@ export default function Home() {
       >
         <img
           ref={bgImgRef}
-          src={HOME_BACKGROUND_SRC}
+          src={homeBackground}
           alt=""
-          className="h-[118%] w-[118%] max-w-none -translate-x-[8%] -translate-y-[6%] object-cover object-center opacity-[0.98] brightness-[1.04] contrast-[1.02] saturate-[1.03]"
+          className="h-[118%] w-[118%] max-w-none -translate-x-[8%] -translate-y-[6%] object-cover object-center opacity-[0.98] brightness-[1.03] contrast-[1.02] saturate-[1.04]"
           draggable={false}
         />
       </div>
 
       <div
-        className="pointer-events-none fixed inset-0 bg-gradient-to-b from-[#0a140f]/48 via-[#1b3022]/32 to-[#0d1a14]/58"
+        className="pointer-events-none fixed inset-0 bg-gradient-to-b from-[#1c1018]/48 via-[#141016]/34 to-[#0a060c]/56"
         aria-hidden
       />
       <div
         ref={vignetteRef}
-        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_76%_at_50%_42%,transparent_0%,transparent_38%,#0a140f_94%)]"
+        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_92%_78%_at_50%_40%,transparent_0%,transparent_32%,#0c060e_90%)]"
         aria-hidden
       />
       <div
