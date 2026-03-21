@@ -24,7 +24,7 @@ export default function Timer({
       <div
         className={`font-mono tabular-nums tracking-tight ${
           prominent
-            ? 'text-5xl font-bold tabular-nums sm:text-6xl md:text-7xl'
+            ? 'text-4xl font-bold tabular-nums sm:text-5xl md:text-6xl'
             : 'text-4xl font-semibold'
         } ${
           paused

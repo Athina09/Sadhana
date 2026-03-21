@@ -125,10 +125,14 @@ export default function SessionAmbientArt() {
   }, [])
 
   return (
-    <div ref={rootRef} className="pointer-events-none w-full select-none" aria-hidden>
+    <div
+      ref={rootRef}
+      className="pointer-events-none flex h-full min-h-0 w-full min-w-0 flex-col select-none"
+      aria-hidden
+    >
       <div
         ref={wrapRef}
-        className="relative aspect-[2/1] w-full min-h-[13rem] overflow-hidden rounded-3xl border border-zinc-800/90 bg-zinc-950/60 shadow-[0_16px_50px_rgba(0,0,0,0.5)] sm:aspect-[21/9] sm:min-h-[min(52vh,22rem)] md:min-h-[min(56vh,26rem)]"
+        className="relative min-h-0 h-full w-full overflow-hidden rounded-3xl border border-zinc-800/90 bg-zinc-950/60 shadow-[0_16px_50px_rgba(0,0,0,0.5)]"
         style={{ willChange: 'transform' }}
       >
         <img

@@ -45,11 +45,11 @@ export default function SessionPage() {
   const review = questions.filter((q) => q.markedReview).length
 
   return (
-    <div className="relative mx-auto flex min-h-svh max-w-3xl flex-col px-4 pb-52 pt-8 sm:px-8 sm:pb-56">
+    <div className="relative mx-auto flex h-svh max-h-svh w-full max-w-3xl flex-col overflow-hidden overscroll-none px-4 pb-[env(safe-area-inset-bottom,0px)] pt-4 sm:px-8 sm:pt-5">
       <JumpingMascots />
-      <header className="mb-8 flex flex-col gap-6 border-b border-zinc-800 pb-6">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="min-w-0 flex-1 text-left text-xl font-semibold leading-snug text-white sm:text-2xl">
+      <header className="shrink-0 border-b border-zinc-800 pb-3">
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="min-w-0 flex-1 text-left text-lg font-semibold leading-snug text-white sm:text-xl">
             {sessionName}
           </h1>
           <button
@@ -62,37 +62,39 @@ export default function SessionPage() {
               navigate('/congrats', { state: { sessionId: id } })
               dispatch({ type: 'END_SESSION' })
             }}
-            className="shrink-0 rounded-2xl border-2 border-rose-500/50 bg-rose-600/20 px-6 py-3.5 text-base font-semibold text-rose-100 shadow-md shadow-rose-950/20 transition hover:border-rose-400/70 hover:bg-rose-600/35 sm:px-8 sm:py-4 sm:text-lg"
+            className="shrink-0 rounded-2xl border-2 border-rose-500/50 bg-rose-600/20 px-4 py-2.5 text-sm font-semibold text-rose-100 shadow-md shadow-rose-950/20 transition hover:border-rose-400/70 hover:bg-rose-600/35 sm:px-6 sm:py-3 sm:text-base"
           >
             End session
           </button>
         </div>
-        <div className="flex w-full flex-col items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-950/25 px-4 py-6 sm:gap-4 sm:py-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-500/90 sm:text-xs">
+        <div className="mt-3 flex w-full flex-col items-center gap-1 rounded-2xl border border-emerald-500/20 bg-emerald-950/25 px-3 py-3 sm:gap-2 sm:py-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-500/90 sm:text-[11px]">
             Time remaining
           </p>
           <Timer seconds={time} paused={isPaused} prominent />
         </div>
       </header>
 
-      <QuestionPanel
-        current={currentQuestion}
-        total={totalQuestions}
-        markedImportant={currentQ?.markedImportant ?? false}
-        markedReview={currentQ?.markedReview ?? false}
-        onToggleImportant={() =>
-          dispatch({ type: 'TOGGLE_IMPORTANT', payload: currentQuestion })
-        }
-        onToggleReview={() =>
-          dispatch({ type: 'TOGGLE_REVIEW', payload: currentQuestion })
-        }
-      />
+      <div className="mt-2 shrink-0">
+        <QuestionPanel
+          current={currentQuestion}
+          total={totalQuestions}
+          markedImportant={currentQ?.markedImportant ?? false}
+          markedReview={currentQ?.markedReview ?? false}
+          onToggleImportant={() =>
+            dispatch({ type: 'TOGGLE_IMPORTANT', payload: currentQuestion })
+          }
+          onToggleReview={() =>
+            dispatch({ type: 'TOGGLE_REVIEW', payload: currentQuestion })
+          }
+        />
+      </div>
 
-      <div className="mt-8 flex min-h-[min(50vh,28rem)] w-full flex-1 flex-col sm:mt-10">
+      <div className="mt-2 min-h-0 max-h-[min(50svh,27rem)] flex-1 overflow-hidden py-1">
         <SessionAmbientArt />
       </div>
 
-      <div className="mt-6 w-full sm:mt-8">
+      <div className="mt-4 shrink-0 pt-2 sm:mt-5">
         <Controls
           onPrev={() => dispatch({ type: 'PREV' })}
           onNext={() => dispatch({ type: 'NEXT' })}
@@ -103,7 +105,7 @@ export default function SessionPage() {
         />
       </div>
 
-      <footer className="mt-10 rounded-xl border border-zinc-800/80 bg-zinc-900/40 px-4 py-3 text-center text-xs text-zinc-500">
+      <footer className="mt-2 shrink-0 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-3 py-2 text-center text-[11px] text-zinc-500 sm:text-xs">
         Progress: {attempted} attempted · {important} important · {review} review
       </footer>
     </div>
