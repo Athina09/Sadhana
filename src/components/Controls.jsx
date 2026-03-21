@@ -8,6 +8,7 @@ export default function Controls({
   isPaused,
   canPrev,
   canNext,
+  pauseDisabled = false,
 }) {
   return (
     <div className="flex w-full flex-row items-stretch gap-2 sm:gap-4 md:gap-5">
@@ -22,7 +23,8 @@ export default function Controls({
       <button
         type="button"
         onClick={onPauseResume}
-        className={`${btnBase} min-h-[3rem] border-emerald-500/55 bg-emerald-600/25 text-emerald-100 shadow-[0_10px_36px_rgba(6,78,59,0.4)] hover:border-emerald-400/70 hover:bg-emerald-600/35`}
+        disabled={pauseDisabled}
+        className={`${btnBase} min-h-[3rem] border-emerald-500/55 bg-emerald-600/25 text-emerald-100 shadow-[0_10px_36px_rgba(6,78,59,0.4)] hover:border-emerald-400/70 hover:bg-emerald-600/35 disabled:cursor-not-allowed disabled:opacity-40`}
       >
         {isPaused ? 'Resume' : 'Pause'}
       </button>

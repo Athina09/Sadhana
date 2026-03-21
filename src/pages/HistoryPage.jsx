@@ -14,6 +14,21 @@ function formatDate(iso) {
   }
 }
 
+function formatMmSs(sec) {
+  const s = Math.max(0, Math.floor(Number(sec) || 0))
+  const m = Math.floor(s / 60)
+  const r = s % 60
+  return `${m}:${r.toString().padStart(2, '0')}`
+}
+
+function totalSecondsSpent(questions) {
+  if (!Array.isArray(questions)) return 0
+  return questions.reduce(
+    (sum, q) => sum + (typeof q.secondsSpent === 'number' ? q.secondsSpent : 0),
+    0
+  )
+}
+
 export default function HistoryPage() {
   const location = useLocation()
   const [listVersion, setListVersion] = useState(0)
@@ -53,10 +68,13 @@ export default function HistoryPage() {
       ) : (
         <ul className="flex flex-col gap-3">
           {sessions.map((s) => {
+            const completed = s.questions.filter((q) => q.status === 'completed')
+              .length
             const attempted = s.questions.filter((q) => q.status === 'attempted')
               .length
             const important = s.questions.filter((q) => q.markedImportant).length
             const review = s.questions.filter((q) => q.markedReview).length
+            const totalTime = totalSecondsSpent(s.questions)
             return (
               <li key={s.id}>
                 <div className="flex flex-col gap-2 rounded-2xl border border-zinc-800 bg-zinc-900/50 transition hover:border-zinc-700 sm:flex-row sm:items-stretch">
@@ -70,7 +88,13 @@ export default function HistoryPage() {
                     </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
                       <span>{s.totalQuestions} questions</span>
-                      <span>{attempted} attempted</span>
+                      <span>{completed} completed</span>
+                      <span>{attempted} skipped</span>
+                      {totalTime > 0 && (
+                        <span className="text-zinc-400">
+                          {formatMmSs(totalTime)} total on completed
+                        </span>
+                      )}
                       <span>{important} important</span>
                       <span>{review} review</span>
                     </div>

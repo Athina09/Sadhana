@@ -13,6 +13,7 @@ function buildQuestions(n) {
     status: 'unseen',
     markedImportant: false,
     markedReview: false,
+    secondsSpent: null,
   }))
 }
 
@@ -39,8 +40,31 @@ function sessionReducer(state, action) {
         ...state,
         currentQuestion: next,
         questions: state.questions.map((q) =>
-          q.id === cur ? { ...q, status: 'attempted' } : q
+          q.id === cur && q.status !== 'completed'
+            ? { ...q, status: 'attempted' }
+            : q
         ),
+      }
+    }
+    case 'COMPLETE_QUESTION': {
+      const { secondsSpent } = action.payload
+      const cur = state.currentQuestion
+      const spent = Math.max(0, Math.floor(Number(secondsSpent) || 0))
+      const questions = state.questions.map((q) =>
+        q.id === cur ? { ...q, status: 'completed', secondsSpent: spent } : q
+      )
+      if (cur < state.totalQuestions) {
+        return {
+          ...state,
+          questions,
+          currentQuestion: cur + 1,
+          isPaused: false,
+        }
+      }
+      return {
+        ...state,
+        questions,
+        isPaused: true,
       }
     }
     case 'PREV': {

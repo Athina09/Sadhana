@@ -5,9 +5,11 @@ export function finalizeSessionState(state) {
   const cur = state.currentQuestion
   return {
     ...state,
-    questions: state.questions.map((q) =>
-      q.id === cur ? { ...q, status: 'attempted' } : q
-    ),
+    questions: state.questions.map((q) => {
+      if (q.id !== cur) return q
+      if (q.status === 'completed') return q
+      return { ...q, status: 'attempted' }
+    }),
   }
 }
 

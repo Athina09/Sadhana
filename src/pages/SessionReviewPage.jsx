@@ -45,9 +45,14 @@ export default function SessionReviewPage() {
     )
   }
 
+  const completed = session.questions.filter((q) => q.status === 'completed').length
   const attempted = session.questions.filter((q) => q.status === 'attempted').length
   const important = session.questions.filter((q) => q.markedImportant).length
   const review = session.questions.filter((q) => q.markedReview).length
+  const totalTimeSpent = session.questions.reduce(
+    (sum, q) => sum + (typeof q.secondsSpent === 'number' ? q.secondsSpent : 0),
+    0
+  )
 
   return (
     <div className="mx-auto min-h-svh max-w-2xl px-4 py-10">
@@ -57,8 +62,13 @@ export default function SessionReviewPage() {
           <h1 className="mt-1 text-2xl font-semibold text-white">{session.sessionName}</h1>
           <p className="mt-2 text-sm text-zinc-500">{formatDate(session.endedAt)}</p>
           <p className="mt-3 text-sm text-zinc-400">
-            {session.totalQuestions} questions · {formatMmSs(session.timePerQuestion)} per
+            {session.totalQuestions} questions · {formatMmSs(session.timePerQuestion)} budget per
             question
+            {totalTimeSpent > 0 && (
+              <span className="block text-zinc-300">
+                Total time on completed questions: {formatMmSs(totalTimeSpent)}
+              </span>
+            )}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -84,9 +94,13 @@ export default function SessionReviewPage() {
         </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-3 gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4 text-center text-sm">
+      <div className="mb-6 grid grid-cols-2 gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4 text-center text-sm sm:grid-cols-4">
         <div>
-          <p className="text-zinc-500">Attempted</p>
+          <p className="text-zinc-500">Completed</p>
+          <p className="text-lg font-semibold text-emerald-200">{completed}</p>
+        </div>
+        <div>
+          <p className="text-zinc-500">Skipped</p>
           <p className="text-lg font-semibold text-zinc-100">{attempted}</p>
         </div>
         <div>
@@ -105,6 +119,7 @@ export default function SessionReviewPage() {
             <tr className="border-b border-zinc-800 bg-zinc-900/80 text-zinc-500">
               <th className="px-4 py-3 font-medium">Q#</th>
               <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Time</th>
               <th className="px-4 py-3 font-medium">Marks</th>
             </tr>
           </thead>
@@ -116,7 +131,14 @@ export default function SessionReviewPage() {
               >
                 <td className="px-4 py-3 font-mono text-zinc-300">{q.id}</td>
                 <td className="px-4 py-3 text-zinc-400">
-                  {q.status === 'attempted' ? 'Attempted' : 'Unseen'}
+                  {q.status === 'completed'
+                    ? 'Completed'
+                    : q.status === 'attempted'
+                      ? 'Skipped'
+                      : 'Unseen'}
+                </td>
+                <td className="px-4 py-3 font-mono text-zinc-200">
+                  {typeof q.secondsSpent === 'number' ? formatMmSs(q.secondsSpent) : '—'}
                 </td>
                 <td className="px-4 py-3 text-zinc-300">
                   {[q.markedImportant && '⭐ Important', q.markedReview && '🔁 Review']

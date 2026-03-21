@@ -10,10 +10,14 @@ export default function Timer({
   paused = false,
   className = '',
   prominent = false,
+  /** When true, show time taken (completed question) instead of countdown styling */
+  recorded = false,
 }) {
-  const label = paused
-    ? `Paused at ${formatMmSs(seconds)}`
-    : `Time remaining ${formatMmSs(seconds)}`
+  const label = recorded
+    ? `Time taken ${formatMmSs(seconds)}`
+    : paused
+      ? `Paused at ${formatMmSs(seconds)}`
+      : `Time remaining ${formatMmSs(seconds)}`
 
   return (
     <div
@@ -27,11 +31,13 @@ export default function Timer({
             ? 'text-4xl font-bold tabular-nums sm:text-5xl md:text-6xl'
             : 'text-4xl font-semibold'
         } ${
-          paused
-            ? 'text-zinc-500'
-            : prominent
-              ? 'text-emerald-300 drop-shadow-[0_0_32px_rgba(52,211,153,0.5)] sm:drop-shadow-[0_0_44px_rgba(45,212,191,0.4)]'
-              : 'text-emerald-400'
+          recorded
+            ? 'text-zinc-200'
+            : paused
+              ? 'text-zinc-500'
+              : prominent
+                ? 'text-emerald-300 drop-shadow-[0_0_32px_rgba(52,211,153,0.5)] sm:drop-shadow-[0_0_44px_rgba(45,212,191,0.4)]'
+                : 'text-emerald-400'
         }`}
         aria-live="polite"
         aria-label={label}
