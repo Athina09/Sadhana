@@ -2,6 +2,7 @@ import { useRef, useLayoutEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import SessionForm from '../components/SessionForm'
+import AuthPanel from '../components/AuthPanel'
 import { useSession } from '../context/SessionContext'
 import homeBackground from '../assets/home-background.png'
 
@@ -154,6 +155,7 @@ export default function Home() {
             </Link>
           </header>
           <SessionForm onStart={handleStart} variant="ghibli" />
+          <AuthPanel />
         </div>
       </div>
     </div>

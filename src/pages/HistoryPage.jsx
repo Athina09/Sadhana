@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 import { deleteSession, loadSessions } from '../utils/sessionHistory'
 
 function formatDate(iso) {
@@ -31,14 +32,27 @@ function totalSecondsSpent(questions) {
 
 export default function HistoryPage() {
   const location = useLocation()
+  const { user, syncTick } = useAuth()
   const [listVersion, setListVersion] = useState(0)
-  const sessions = useMemo(
-    () => loadSessions(),
-    [location.key, listVersion]
-  )
+  const [sessions, setSessions] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  function handleDelete(id) {
-    deleteSession(id)
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    loadSessions(user).then((list) => {
+      if (!cancelled) {
+        setSessions(list)
+        setLoading(false)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [user, location.key, listVersion, syncTick])
+
+  async function handleDelete(id) {
+    await deleteSession(id, user)
     setListVersion((v) => v + 1)
   }
 

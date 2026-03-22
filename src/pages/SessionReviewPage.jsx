@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 import { deleteSession, getSessionById } from '../utils/sessionHistory'
 
 function formatMmSs(sec) {
@@ -23,12 +24,41 @@ function formatDate(iso) {
 export default function SessionReviewPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const session = useMemo(() => (id ? getSessionById(id) : null), [id])
+  const { user } = useAuth()
+  const [session, setSession] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  function handleDelete() {
+  useEffect(() => {
+    if (!id) {
+      setSession(null)
+      setLoading(false)
+      return
+    }
+    let cancelled = false
+    setLoading(true)
+    getSessionById(id, user).then((s) => {
+      if (!cancelled) {
+        setSession(s)
+        setLoading(false)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [id, user])
+
+  async function handleDelete() {
     if (!session) return
-    deleteSession(session.id)
+    await deleteSession(session.id, user)
     navigate('/history', { replace: true })
+  }
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <p className="text-zinc-500">Loading…</p>
+      </div>
+    )
   }
 
   if (!session) {

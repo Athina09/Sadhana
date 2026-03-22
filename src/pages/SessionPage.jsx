@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Timer from '../components/Timer'
 import QuestionPanel from '../components/QuestionPanel'
 import Controls from '../components/Controls'
+import { useAuth } from '../context/AuthContext'
 import { useSession } from '../context/SessionContext'
 import useTimer from '../hooks/useTimer'
 import { finalizeSessionState, saveSession } from '../utils/sessionHistory'
@@ -18,6 +19,7 @@ function formatMmSs(sec) {
 
 export default function SessionPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { state, dispatch } = useSession()
   const {
     sessionName,
@@ -78,11 +80,9 @@ export default function SessionPage() {
           </h1>
           <button
             type="button"
-            onClick={() => {
+            onClick={async () => {
               const finalized = finalizeSessionState(state)
-              const id = saveSession(finalized)
-              // Navigate before END_SESSION so SessionPage’s totalQuestions===0 effect
-              // does not call navigate('/') and override /congrats.
+              const id = await saveSession(finalized, user)
               navigate('/congrats', { state: { sessionId: id } })
               dispatch({ type: 'END_SESSION' })
             }}
