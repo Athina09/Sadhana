@@ -142,6 +142,26 @@ export async function getSessionById(id, user) {
   return loadLocalSessions().find((s) => s.id === id) ?? null
 }
 
+export async function updateSessionName(id, sessionName, user) {
+  const nextName = String(sessionName ?? '').trim()
+  if (!nextName) return
+
+  if (useCloud(user)) {
+    const { error } = await supabase
+      .from('sessions')
+      .update({ session_name: nextName })
+      .eq('id', id)
+      .eq('user_id', user.id)
+    if (error) console.error('updateSessionName', error.message)
+    return
+  }
+
+  const list = loadLocalSessions().map((s) =>
+    s.id === id ? { ...s, sessionName: nextName } : s
+  )
+  saveLocalSessions(list)
+}
+
 export async function deleteSession(id, user) {
   if (useCloud(user)) {
     const { error } = await supabase

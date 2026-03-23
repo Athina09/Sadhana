@@ -1,7 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { deleteSession, loadSessions } from '../utils/sessionHistory'
+import {
+  deleteSession,
+  loadSessions,
+  updateSessionName,
+} from '../utils/sessionHistory'
 
 function formatDate(iso) {
   try {
@@ -53,6 +57,14 @@ export default function HistoryPage() {
 
   async function handleDelete(id) {
     await deleteSession(id, user)
+    setListVersion((v) => v + 1)
+  }
+
+  async function handleRename(id, currentName) {
+    const nextName = window.prompt('Rename session', currentName ?? '')
+    if (nextName == null) return
+    if (!nextName.trim() || nextName.trim() === currentName) return
+    await updateSessionName(id, nextName, user)
     setListVersion((v) => v + 1)
   }
 
@@ -113,7 +125,14 @@ export default function HistoryPage() {
                       <span>{review} review</span>
                     </div>
                   </Link>
-                  <div className="flex shrink-0 items-center border-t border-zinc-800 px-3 py-2 sm:border-l sm:border-t-0 sm:px-2">
+                  <div className="flex shrink-0 items-center gap-2 border-t border-zinc-800 px-3 py-2 sm:border-l sm:border-t-0 sm:px-2">
+                    <button
+                      type="button"
+                      onClick={() => handleRename(s.id, s.sessionName)}
+                      className="w-full rounded-xl border border-sky-500/40 bg-sky-950/30 px-4 py-2.5 text-sm font-medium text-sky-200 transition hover:border-sky-400/60 hover:bg-sky-950/50 sm:w-auto"
+                    >
+                      Rename
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(s.id)}
